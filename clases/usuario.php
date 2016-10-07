@@ -48,76 +48,60 @@ class Usuario
 		$this->nombre = $valor;
 	}
 
-	}
-//--------------------------------------------------------------------------------//
-//--CONSTRUCTOR
-	public function __construct($correo=NULL)
-	{
-		if($correo != NULL){
-			$obj = Usuario::TraerUnUsuario($correo);
-			
-			$this->nombre = $obj->nombre;
-			$this->correo = $correo;
-			$this->clave = $obj->clave;
-		}
-	}
-
-//--------------------------------------------------------------------------------//
-//--TOSTRING	
-  	public function ToString()
-	{
-	  	return $this->nombre."-".$this->correo."-".$this->clave;
-	}
-//--------------------------------------------------------------------------------//
-
 //--------------------------------------------------------------------------------//
 //--METODO DE CLASE
-	public static function TraerUnUsuario($idParametro) 
+	public static function Cargar($idParametro) 
 	{	
 
 
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-		//$consulta =$objetoAccesoDato->RetornarConsulta("select * from persona where id =:id");
-		$consulta =$objetoAccesoDato->RetornarConsulta("CALL TraerUnUsuario(:id)");
+		$consulta =$objetoAccesoDato->RetornarConsulta("select * from usuario where id =:id");
 		$consulta->bindValue(':id', $idParametro, PDO::PARAM_INT);
 		$consulta->execute();
-		$personaBuscada= $consulta->fetchObject('usuario');
-		return $personaBuscada;	
+		$usuarioBuscado= $consulta->fetchObject('usuario');
+		return $usuarioBuscado;	
+					
+	}
+
+	public static function Verificar($correo, $clave) 
+	{	
+		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
+		$consulta =$objetoAccesoDato->RetornarConsulta("select * from usuario where correo =:correo and clave =:clave");
+		$consulta->bindValue(':correo', $correo, PDO::PARAM_STR);
+		$consulta->bindValue(':clave', $clave, PDO::PARAM_STR);
+		$consulta->execute();
+		$usuarioBuscado= $consulta->fetchObject('usuario');
+		return $usuarioBuscado;	
 					
 	}
 	
-	public static function TraerTodasLasUsuarios()
+	public static function Buscar()
 	{
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-		//$consulta =$objetoAccesoDato->RetornarConsulta("select * from persona");
-		$consulta =$objetoAccesoDato->RetornarConsulta("CALL TraerTodosLosUsuarios() ");
+		$consulta =$objetoAccesoDato->RetornarConsulta("select * from usuario");
 		$consulta->execute();			
-		$arrPersonas= $consulta->fetchAll(PDO::FETCH_CLASS, "usuario");	
-		return $arrPersonas;
+		$arrUsuarios= $consulta->fetchAll(PDO::FETCH_CLASS, "usuario");	
+		return $arrUsuarios;
 	}
 	
-	public static function BorrarUsuario($idParametro)
+	public static function Borrar($id)
 	{	
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-		//$consulta =$objetoAccesoDato->RetornarConsulta("delete from persona	WHERE id=:id");	
-		$consulta =$objetoAccesoDato->RetornarConsulta("CALL BorrarUsuario(:id)");	
-		$consulta->bindValue(':id',$idParametro, PDO::PARAM_INT);		
+		$consulta =$objetoAccesoDato->RetornarConsulta("delete from usuario WHERE id=:id");	
+		$consulta->bindValue(':id',$id, PDO::PARAM_INT);		
 		$consulta->execute();
 		return $consulta->rowCount();
 		
 	}
 	
-	public static function ModificarUsuario($usuario)
+	public static function Editar($usuario)
 	{
 			$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-			/*$consulta =$objetoAccesoDato->RetornarConsulta("
-				update persona 
-				set nombre=:nombre,
-				apellido=:apellido,
-				foto=:foto
+			$consulta =$objetoAccesoDato->RetornarConsulta("
+				update usuario 
+				set nombre=:nombre
 				WHERE id=:id");
-			$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();*/ 
-			$consulta =$objetoAccesoDato->RetornarConsulta("CALL ModificarPersona(:id,:nombre)");
+			$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
 			$consulta->bindValue(':id',$usuario->id, PDO::PARAM_INT);
 			$consulta->bindValue(':nombre',$usuario->nombre, PDO::PARAM_STR);
 			return $consulta->execute();
@@ -127,14 +111,13 @@ class Usuario
 
 //--------------------------------------------------------------------------------//
 
-	public static function InsertarUsuario($Usuario)
+	public static function Guardar($usuario)
 	{
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-		//$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into Usuario (nombre,apellido,dni,foto)values(:nombre,:apellido,:dni,:foto)");
-		$consulta =$objetoAccesoDato->RetornarConsulta("CALL InsertarUsuario (:nombre,:correo,:clave)");
+		$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into usuario (nombre,correo,clave) values(:nombre,:correo,:clave)");
 		$consulta->bindValue(':nombre',$usuario->nombre, PDO::PARAM_STR);
-		$consulta->bindValue(':correo', $usuario->apellido, PDO::PARAM_STR);
-		$consulta->bindValue(':clave', $usuario->dni, PDO::PARAM_STR);
+		$consulta->bindValue(':correo', $usuario->correo, PDO::PARAM_STR);
+		$consulta->bindValue(':clave', $usuario->clave, PDO::PARAM_STR);
 		$consulta->execute();		
 		return $objetoAccesoDato->RetornarUltimoIdInsertado();
 	

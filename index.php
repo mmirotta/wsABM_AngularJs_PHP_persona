@@ -8,6 +8,7 @@
  */
 require 'vendor/autoload.php';
 require 'clases/Personas.php';
+require 'clases/usuario.php';
 /**
  * Step 2: Instantiate a Slim application
  *
@@ -42,53 +43,45 @@ $app->get('/', function ($request, $response, $args) {
 /*BUSCAR*/
 
 $app->get('/usuarios[/]', function ($request, $response, $args) {
-    $response->write("Listado de usuarios");
+    $listado=Usuario::Buscar();
+    $response->write(json_encode($listado));
     
     return $response;
 });
 
 $app->get('/personas[/]', function ($request, $response, $args) {
-    $listado=Persona::TraerTodasLasPersonas();
+    $listado=Persona::Buscar();
     $response->write(json_encode($listado));
     
     return $response;
 });
 
 
-
-
-
 /*CARGAR*/
 
-$app->get('/usuario[/{id}[/{name}]]', function ($request, $response, $args) {
-    $response->write("Datos usuario ");
-    var_dump($args);
+$app->get('/usuario/{id}', function ($request, $response, $args) {
+    $usuario=Usuario::Cargar($args['id']);
+    $response->write(json_encode($usuario));
     return $response;
 });
 
 $app->get('/persona/{id}', function ($request, $response, $args) {
-    $persona=Persona::TraerUnaPersona();
+    $persona=Persona::Cargar($args['id']);
     $response->write(json_encode($persona));
-    var_dump($args);
     return $response;
 });
-
-
-
 
 
 
 
 /* POST: Para crear recursos GUARDAR*/
-$app->post('/usuario/{id}', function ($request, $response, $args) {
-    $response->write("Welcome to Slim!");
-    var_dump($args);
+$app->post('/usuario/{usuario}', function ($request, $response, $args) {
+    Usuario::Guardar(json_decode($args['usuario']));
     return $response;
 });
 
 $app->post('/persona/{persona}', function ($request, $response, $args) {
-    Persona::InsertarPersona(json_decode($args['persona']));
-    $response->write("Guardado");
+    Persona::Guardar(json_decode($args['persona']));
     return $response;
 });
 
@@ -96,15 +89,13 @@ $app->post('/persona/{persona}', function ($request, $response, $args) {
 
 
 // /* PUT: Para editar recursos MODIFICAR*/
-$app->put('/usuario/{id}', function ($request, $response, $args) {
-    $response->write("Welcome to Slim!");
-    var_dump($args);
+$app->put('/usuario/{usuario}', function ($request, $response, $args) {
+    Usuario::Editar(json_decode($args['usuario']));
     return $response;
 });
 
 $app->put('/persona/{persona}', function ($request, $response, $args) {
-    $response->write("Welcome to Slim!");
-    var_dump($args);
+    Persona::Editar(json_decode($args['persona']));
     return $response;
 });
 
@@ -113,14 +104,12 @@ $app->put('/persona/{persona}', function ($request, $response, $args) {
 
 // /* DELETE: Para eliminar recursos ELIMINAR*/
 $app->delete('/usuario/{id}', function ($request, $response, $args) {
-    $response->write("borrar !", $args->id);
-    var_dump($args);
+    Usuario::Borrar($args['id']);
     return $response;
 });
 
 $app->delete('/persona/{id}', function ($request, $response, $args) {
-    Persona::BorrarPersona($args['id']);
-    $response->write("borrado");
+    Persona::Borrar($args['id']);
     return $response;
 });
 /**

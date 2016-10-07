@@ -79,7 +79,7 @@ class Persona
 
 //--------------------------------------------------------------------------------//
 //--METODO DE CLASE
-	public static function TraerUnaPersona($idParametro) 
+	public static function Cargar($idParametro) 
 	{	
 
 
@@ -93,7 +93,7 @@ class Persona
 					
 	}
 	
-	public static function TraerTodasLasPersonas()
+	public static function Buscar()
 	{
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
 		//$consulta =$objetoAccesoDato->RetornarConsulta("select * from persona");
@@ -103,7 +103,7 @@ class Persona
 		return $arrPersonas;
 	}
 	
-	public static function BorrarPersona($idParametro)
+	public static function Borrar($idParametro)
 	{	
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
 		//$consulta =$objetoAccesoDato->RetornarConsulta("delete from persona	WHERE id=:id");	
@@ -114,7 +114,7 @@ class Persona
 		
 	}
 	
-	public static function ModificarPersona($persona)
+	public static function Editar($persona)
 	{
 			$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
 			/*$consulta =$objetoAccesoDato->RetornarConsulta("
@@ -136,7 +136,7 @@ class Persona
 
 //--------------------------------------------------------------------------------//
 
-	public static function InsertarPersona($persona)
+	public static function Guardar($persona)
 	{
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
 		//$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into persona (nombre,apellido,dni,foto)values(:nombre,:apellido,:dni,:foto)");
@@ -151,45 +151,3 @@ class Persona
 				
 	}	
 //--------------------------------------------------------------------------------//
-
-
-
-	public static function TraerPersonasTest()
-	{
-		$arrayDePersonas=array();
-
-		$persona = new stdClass();
-		$persona->id = "4";
-		$persona->nombre = "rogelio";
-		$persona->apellido = "agua";
-		$persona->dni = "333333";
-		$persona->foto = "333333.jpg";
-
-		//$objetJson = json_encode($persona);
-		//echo $objetJson;
-		$persona2 = new stdClass();
-		$persona2->id = "5";
-		$persona2->nombre = "Bañera";
-		$persona2->apellido = "giratoria";
-		$persona2->dni = "222222";
-		$persona2->foto = "222222.jpg";
-
-		$persona3 = new stdClass();
-		$persona3->id = "6";
-		$persona3->nombre = "Julieta";
-		$persona3->apellido = "Roberto";
-		$persona3->dni = "888888";
-		$persona3->foto = "888888.jpg";
-
-		$arrayDePersonas[]=$persona;
-		$arrayDePersonas[]=$persona2;
-		$arrayDePersonas[]=$persona3;
-		 
-		
-
-		return  $arrayDePersonas;
-				
-	}	
-
-
-}
